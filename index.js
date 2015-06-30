@@ -32,7 +32,6 @@ module.exports = postcss.plugin(
       var to = result.opts.to
         ? path.dirname(result.opts.to)
         : from
-
       styles.eachDecl(function(decl) {
         if (decl.value && decl.value.indexOf("url(") > -1) {
           processDecl(result, decl, from, to, mode, options)
@@ -288,6 +287,7 @@ function processCopy(result, from, dirname, urlMeta, to, options, decl) {
   var relativeAssetsPath = (options && options.assetsPath)
     ? options.assetsPath
     : ""
+    console.log("asset:"+relativeAssetsPath)
   var absoluteAssetsPath
 
   var filePathUrl = path.resolve(dirname, urlMeta.value)
@@ -331,21 +331,28 @@ function processCopy(result, from, dirname, urlMeta, to, options, decl) {
       dirname.replace(new RegExp(from + "[\/]\?"), ""),
       path.dirname(urlMeta.value)
     )
-    absoluteAssetsPath = path.resolve(to, relativeAssetsPath)
+      console.log("relative:"+relativeAssetsPath)
+
+      //absoluteAssetsPath = path.resolve(to, relativeAssetsPath)
+      absoluteAssetsPath = path.resolve(to, 'dist/pack')
 
     // create the destination directory if it not exist
     mkdirp.sync(absoluteAssetsPath)
   }
 
   absoluteAssetsPath = path.join(absoluteAssetsPath, name)
+    console.log("absolute:"+absoluteAssetsPath)
 
-  // if the file don't exist in the destination, create it.
+
+    // if the file don't exist in the destination, create it.
   try {
     fs.accessSync(absoluteAssetsPath)
   }
   catch (err) {
-    fs.writeFileSync(absoluteAssetsPath, contents)
+      fs.writeFileSync(absoluteAssetsPath, contents)
   }
-
+    var relativeUrl = relativeAssetsPath.replace(path.resolve(process.cwd()),'');
+    relativeUrl = relativeUrl.replace(/\\/g,"/");
+    console.log("dir:"+relativeUrl)
   return createUrl(urlMeta, path.join(relativeAssetsPath, nameUrl))
 }
