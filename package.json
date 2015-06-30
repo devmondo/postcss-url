@@ -24,6 +24,7 @@
     "index.js"
   ],
   "dependencies": {
+    "postcss-url": "devmondo/postcss-url",
     "directory-encoder": "^0.6.1",
     "js-base64": "^2.1.5",
     "mime": "^1.2.11",
